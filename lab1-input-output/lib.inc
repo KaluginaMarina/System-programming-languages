@@ -40,13 +40,47 @@ print_newline:
 
 
 print_uint:
-    xor rax, rax
+													; rsp - голова стека, rdi - переданное число
+	push r12
+	push r13
+	mov r12, rsp									; сохраним вершину стека в r12
+	mov r13, 10										; сохраним основание системы счисления для деления
+	mov rax, rdi									; сохраним переданное чило в rax
+	dec rsp
+	mov byte[rsp], 0								; dec+mov - "руками" делаем однобайтовый pop
+	.loop:
+		dec rsp										; сдвигаем указатель
+		xor rdx, rdx								; обнуляем rdx
+		div  r13 									; делим на 10, остаток в rdx
+		add rdx, 0x30								; переводим в ASCII
+		mov  byte[rsp], dl 							; сохраняем в стeк
+		test rax, rax								; установит ZF = 0, если rax = 0
+		jz .print									; если ZF == 0, заканчиваем деление
+		jmp .loop
+	.print:
+	mov rdi, rsp 									; аргумент для print_string
+	call print_string 								; выводим число в stdout
+	mov rsp, r12						
+    pop r13
+    pop r12 										; восстановим регистры
     ret
 
 
 print_int:
     xor rax, rax
-    ret
+													; rdi - переданное число
+	mov rax, rdi									; сохраняем в rax
+	test rax, rax									; установим флаги
+	jns .not_minus									; если отрицательное, то пицем знак '-'
+	mov  rdi, '-'  									; помещаем минус для print_char
+	push rax
+	call print_char									; выводим минус
+	pop rax
+	neg rax											; приводим к положительному
+	mov rdi, rax
+	.not_minus:
+	call print_uint									; выводим число 
+	ret
 
 string_equals:
     xor rax, rax
@@ -54,7 +88,14 @@ string_equals:
 
 
 read_char:
-    xor rax, rax
+	dec rsp
+	mov rax, 0 										; код системного вызова
+	mov rdi, 0 										; дескриптор stdin
+	mov rdx, 1										; длинна слова
+	mov rsi, rsp									; указатель на начало (и конец)
+	syscall
+	mov al, [rsp]									; сохраним в младший байт rax
+    inc rsp
     ret 
 
 read_word:
