@@ -82,35 +82,126 @@ print_int:
 	call print_uint									; выводим число 
 	ret
 
+	
 string_equals:
     xor rax, rax
-    ret
+	push r10
+	push r13
+	loop:
+		mov r10b, byte[rsi]
+		mov r13b, byte[rdi]
+		inc rsi
+		inc rdi
+		cmp r10b, r13b
+		jne ret_zero
+		cmp r13b, 0
+		jne loop
+		inc rax
+	ret_zero:
+		pop r13
+		pop r10
+		ret
 
 
 read_char:
+	push rdi
+	push rdx
 	dec rsp
-	mov rax, 0 										; код системного вызова
-	mov rdi, 0 										; дескриптор stdin
+	xor rax, rax 										; код системного вызова
+	xor rdi, rdi									; дескриптор stdin
 	mov rdx, 1										; длинна слова
 	mov rsi, rsp									; указатель на начало (и конец)
 	syscall
+	test rax, rax
+	je .return
+    xor rax, rax
 	mov al, [rsp]									; сохраним в младший байт rax
+.return:
     inc rsp
+	pop rdx
+	pop rdi
     ret 
 
 read_word:
-    ret
+													; rdi - куда записываем, rsi - длинна строки 
+	push r13										; сохраняем регистры r13, r14
+    push r14
+    xor r14, r14
+    mov r10, rsi
+    mov r13, rdi
+	sp_loop:									; пропускаем все пробелы в начале
+		call read_char								
+		cmp al, 0x20		
+		jne write_char								; начинаем записывать слово
+		jmp sp_loop
+	read_next:
+		call read_char		
+		cmp al, 0x20 ; space
+		je read_end
+	write_char:
+		cmp al, 0x9
+		je read_end
+		cmp al, 0x0
+		je read_end
+		mov byte [r13 + r14], al
+		inc r14
+		cmp r14, r10
+		je read_out
+		jmp read_next
+	read_end:
+		mov rax, r13
+		mov byte [r13 + r14], 0
+		mov rdx, r14
+		jmp return
+	read_out:
+		xor rax, rax
+		xor rdx, rdx
+	return:
+		pop r14
+		pop r13		
+	ret
 
 ; rdi points to a string
 ; returns rax: number, rdx : length
 parse_uint:
+	push r13
+	mov r13, 10
     xor rax, rax
-    ret
+	xor rcx, rcx
+	xor rdx, rdx
+	xor rsi, rsi
+	parse_char:
+		mov sil, [rdi + rcx]
+		cmp sil, 0x30
+		jl .return
+		cmp sil, 0x39
+		jg .return
+		inc rcx
+		sub sil, 0x30
+		mul r13
+		add rax, rsi
+		jmp parse_char
+	.return:
+		mov rdx, rcx
+		pop r13
+		ret
 
 ; rdi points to a string
 ; returns rax: number, rdx : length
 parse_int:
     xor rax, rax
+    cmp byte [rdi], 0x2d
+    je parse_ng
+    call parse_uint
+    ret
+parse_ng:
+    inc rdi
+    call parse_uint
+    cmp rdx, 0
+    je .return
+    neg rax
+    inc rdx
+.return:
     ret 
 
 
@@ -120,12 +211,15 @@ string_copy:
 	push r13											; сохраним значение регистра
 	.loop:
 		cmp rcx, rdx									; сравниваем счетчик и количество символов в строке
-		je .exit										; если все символы скопированы - выходим
+		je .too_long										; если все символы скопированы - выходим
 		mov r13, [rdi + rcx]							; сохраним в r13 текущий символ
 		mov [rsi + rcx], r13							; скопируем
+		cmp r13, 0
+		je .exit
 		inc rcx											; увеличиваем счетчик
 		jmp .loop
+	.too_long:
+		mov rax, 0
 	.exit:
-	mov byte[rsi + rcx + 1], 0
-	pop r13												; вернем значение r13	
-	ret
+		pop r13												; вернем значение r13	
+		ret
