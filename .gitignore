@@ -2,3 +2,9 @@
 !lab1-input-output
 !lab1-input-output/lib.inc
 !.gitignore
+!lab2-dictionary
+!lab2-dictionary/colon.inc
+!lab2-dictionary/dict.asm
+!lab2-dictionary/lib.asm
+!lab2-dictionary/main.asm
+!lab2-dictionary/notes
