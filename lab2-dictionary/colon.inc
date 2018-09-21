@@ -10,7 +10,7 @@ db %1, 0
 %endmacro
 
 colon "hello", hello
-db "hello", 0 
+db "goodbye", 0 
 
 colon "world", world
 db "world", 0

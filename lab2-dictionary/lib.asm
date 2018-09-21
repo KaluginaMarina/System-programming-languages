@@ -11,12 +11,13 @@ global parse_uint
 global parse_int
 global read_char
 global read_word
+global print_newline
 
 string_length:
     xor rax, rax									; обнуляем rax
 	.loop:
 		cmp byte[rdi + rax], 0 						; установит ZF = 0, только если [rdi + rax] = 0
-		jz .exit 									; если ZF == 0, заканчиваем цикл 
+		je .exit 									; если ZF == 0, заканчиваем цикл 
 		inc rax 									; увеличиваем счетчик
 		jmp .loop
 	.exit:
@@ -48,6 +49,8 @@ print_char:
 
 print_newline:
     xor rax, rax
+	mov rdi, 0xA
+	call print_char
     ret
 
 

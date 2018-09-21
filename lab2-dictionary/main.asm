@@ -10,6 +10,7 @@ extern read_word
 extern find_word
 extern string_length
 extern print_string
+extern print_newline
 
 _start: 
 	
@@ -18,23 +19,29 @@ _start:
 	
 	mov rdi, rsp			; скажем ему куда записываем слово
 	call read_word			; оно нам вернет где начало слово (в rax)
+	
+	cmp rax, 0				; тут надо проверить если в rax 0
+	je .false
+	 
 	mov rdi, rax
 	mov rsi, lw
 	call find_word			; возвращает указатель на строку
 	cmp rax, 0
 	je .false
 	add rax, 8				; указатель на начало строки, а не на адрес следующего слова	
-	mov r10, rax
-	
+	mov r10, rax 
+	mov rdi, rax
 							; дальше нам надо найти строку по метке 
 							;(для этого надо найти сначала метку, которая лежит после строки)
 		 						
 	call string_length
 	add r10, rax			; сдвинем указатель на начало метки
-	mov rdi, r10		
+	inc r10					; учитываем \0
+	mov rdi, r10	
 	call print_string
 	
 .exit:	
+	call print_newline
 	mov rax, 60 
 	mov rdi, rax 			; чтобы echo выводило то, что у нас возвращает find_word
 	syscall
