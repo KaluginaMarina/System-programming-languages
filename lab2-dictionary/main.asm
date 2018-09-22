@@ -38,6 +38,8 @@ _start:
 	add r10, rax			; сдвинем указатель на начало метки
 	inc r10					; учитываем \0
 	mov rdi, r10	
+	
+	mov r15, 1				; дескриптор для stdout
 	call print_string
 	
 .exit:	
@@ -51,6 +53,8 @@ _start:
 	mov rdi, msg			; если нет слова - то так и напишем :)
 	call string_length
 	mov rsi, rax
+	
+	mov r15, 2				; дескриптор для ошибок
 	call print_string
 	jmp .exit
 	

@@ -29,7 +29,7 @@ print_string:
 	call string_length								; считаем длинну строки, помещаем ее в rax
 	mov rdx, rax									; помещаем в rdx длинну строки
 	mov rax, 1 										; номер системного вызова write
-	mov rdi, 1										; дескриптор stdout
+	mov rdi, r15									; дескриптор, который передаем через r15
 	syscall
     ret
 
@@ -41,7 +41,7 @@ print_char:
 	mov rsi, rsp 									; адрес строки
 	mov rdx, 1										; длинна строки (1)
 	mov rax, 1 										; номер системного вызова write
-	mov rdi, 1										; дескриптор stdout
+	mov rdi, r15									; дескриптор, который мы храним в r15
 	syscall
 	pop rsi											; восстановим rsi
 	add rsp, 8										; добавим 8 байт в rsp => уменьшим адрес стека => вернем регистр в изначальное состояние
