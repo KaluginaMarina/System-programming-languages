@@ -3,8 +3,8 @@
 #include <locale.h>
 #include "lab3.h"
 
-int print_array(const int a[], int sz){
-	int i;
+int print_array(const int a[], size_t sz){
+	size_t i;
 	printf ("[");
 	for (i = 0; i < sz; ++i) {
 		printf(" %d", a[i]);

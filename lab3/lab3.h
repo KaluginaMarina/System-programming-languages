@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #ifndef LAB3
 #define LAB3
 
@@ -6,11 +8,11 @@
  * @param int sz - размер векторов
  * @return размер массива
  */
-int scalar( const int a[], const int b[], int sz );
+int scalar( const int a[], const int b[], size_t sz );
 
 /* Функция для записи массива на экаран
 */
-int print_array(const int a[], int sz);
+int print_array(const int a[], size_t sz);
 
 /* Функция проверки числа на простоту
  * @param x - число:)

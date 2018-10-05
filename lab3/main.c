@@ -7,7 +7,7 @@ const int x[] = { 1, 2, 3, 4, 5 };
 const int y[] = { 5, 4, 3, 2, 1 };
 
 int main() {
-    int sz;
+    size_t sz;
 	int n;
 	setlocale(LC_CTYPE, "Rus");
 	sz = sizeof( x ) / sizeof( x[0] );
