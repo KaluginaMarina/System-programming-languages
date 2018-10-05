@@ -18,7 +18,10 @@ int main() {
 	printf( "Скалярное произведение: %d\n\n", scalar( x, y,  sz));
 
 	printf("Введите число для проверки на простоту: "); 
-	scanf("%d", &n);	
-	prime_int(n) ? printf("Не является простым\n") : printf("Простое\n");
+	if (scanf("%d", &n)) {	
+		prime_int(n) ? printf("Не является простым\n") : printf("Простое\n");
+	} else {
+		printf("Было введено не число.\n");
+	}
 	return 0;
 }
