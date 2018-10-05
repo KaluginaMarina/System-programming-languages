@@ -1,5 +1,5 @@
 section .data
-	msg: db "No world", 0
+	msg: db "No word", 0
 
 global _start	
 	
