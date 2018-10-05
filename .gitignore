@@ -9,5 +9,6 @@
 !lab2-dictionary/main.asm
 !lab2-dictionary/notes.md
 !lab3
-!lab3/*.c
-!lab3/*.h
+!*.c
+!*.h
+!*.md
