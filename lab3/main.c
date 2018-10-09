@@ -3,14 +3,30 @@
 #include <locale.h>
 #include "lab3.h"
 
-const int x[] = { 1, 2, 3, 4, 5 };
-const int y[] = { 5, 4, 3, 2, 1 };
 
 int main() {
-    size_t sz;
-	int n;
+	size_t sz;
+	long unsigned int n;
+	size_t i;
+	int *x;
+	int *y;
+	
+	printf("Введите длинну вектора: ");
+	scanf("%lu", &sz);
+	
+	x =  (int*)malloc(sz * sizeof(int));
+	y =  (int*)malloc(sz * sizeof(int));
+	
+	printf ("\nВведите первый вектор: ");
+	for (i = 0; i < sz; ++i) {
+		scanf("%d", (x+i));
+	}
+	printf ("\nВведите второй вектор: ");
+	for (i = 0; i < sz; ++i) {
+		scanf("%d", (y+i));
+	}
+	
 	setlocale(LC_CTYPE, "Rus");
-	sz = sizeof( x ) / sizeof( x[0] );
 	printf("x = ");
 	print_array(x, sz);
 	printf("y = ");
@@ -18,8 +34,8 @@ int main() {
 	printf( "Скалярное произведение: %d\n\n", scalar( x, y,  sz));
 
 	printf("Введите число для проверки на простоту: "); 
-	if (scanf("%d", &n)) {	
-		prime_int(n) ? printf("Не является простым\n") : printf("Простое\n");
+	if (scanf("%lu", &n)) {	
+		prime_int(n) ? printf("%lu не является простым\n", n) : printf("%lu - простое\n", n);
 	} else {
 		printf("Было введено не число.\n");
 	}
