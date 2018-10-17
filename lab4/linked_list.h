@@ -42,4 +42,24 @@ struct list* list_add_back(struct list* list, int e);
  */
  void print_list(struct list* list);
 
+/**
+*  Функция возвращает элемент по индексу
+*  @param list - указатель на список
+*  @param index - индекс элемента списка
+*  @return элемент списка или NULL, если индекс выходит за границы списка или list пуст
+*/
+struct list* list_get(struct list* list, int index);
+
+/**
+ *  Функция удаляет все элементы списка
+ *  @param list - указатель на список
+ */
+void list_free(struct list** list);
+
+/**
+ *  Функция считает длинну списка
+ *  @param  list - указатель на список
+ *  @return длинну списка
+ */
+ int list_length(struct list* list);
 #endif //LAB4_LINKED_LIST_H
