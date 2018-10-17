@@ -40,15 +40,15 @@ struct list* list_add_back(struct list* list, int e);
  *  Функция для вывода всех эдементов списка на экран
  *  @param list - указатель на список
  */
- void print_list(struct list* list);
+ void print_list(struct list const* list);
 
 /**
-*  Функция возвращает элемент по индексу
+*  Функция возвращает элемент списка по индексу
 *  @param list - указатель на список
 *  @param index - индекс элемента списка
 *  @return элемент списка или NULL, если индекс выходит за границы списка или list пуст
 */
-struct list* list_get(struct list* list, int index);
+struct list* list_node_at(struct list const* list, int index);
 
 /**
  *  Функция удаляет все элементы списка
@@ -61,5 +61,21 @@ void list_free(struct list** list);
  *  @param  list - указатель на список
  *  @return длинну списка
  */
- int list_length(struct list* list);
+ int list_length(struct list const* list);
+
+/**
+*  Функция возвращает значение элемента списка по индексу
+*  @param list - указатель на список
+*  @param index - индекс элемента списка
+*  @return значение элемента списка (если индекса в списке нет, вернет 0, шо поделать ¯\_(ツ)_/¯)
+*/
+int list_get(struct list const* list, int index);
+
+/**
+ *  Функция считает сумму элементов списка
+ *  @param list - указатель на list
+ *  @return сумму элементов списка
+ *          0, если list пуст (в общем-то, логично С: )
+ */
+int list_sum(struct list const* list);
 #endif //LAB4_LINKED_LIST_H

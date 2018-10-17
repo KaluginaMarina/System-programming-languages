@@ -38,8 +38,9 @@ struct list* list_add_back(struct list* list, int e){
     return new_elem_list;
 }
 
-void print_list(struct list* list){
+void print_list(struct list const* list){
     printf("\n===============================\nКоличество элементов: %d\n", list_length(list));
+    printf("Сумма элементов: %d\n", list_sum(list));
     if (list == NULL){
         printf("list слишком пуст");
         return;
@@ -55,7 +56,7 @@ void print_list(struct list* list){
     printf("\n===============================\n");
 }
 
-struct list* list_get(struct list* list, int index){
+struct list* list_node_at(struct list const* list, int index){
     int i = 0;
     if (list == NULL){
         return NULL;
@@ -81,7 +82,7 @@ void list_free(struct list** list){
     }
 }
 
-int list_length(struct list* list){
+int list_length(struct list const* list){
     int i = 0;
     while (list != NULL) {
         struct list* last = list->last;
@@ -89,4 +90,18 @@ int list_length(struct list* list){
         ++i;
     }
     return i;
+}
+
+int list_get(struct list const* list, int index){
+    struct list* ret = list_node_at(list, index);
+    return ret == NULL ? 0 : ret->elem;
+}
+
+int list_sum(struct list const* list){
+    int sum = 0;
+    while (list != NULL){
+        sum += list->elem;
+        list = list->last;
+    }
+    return sum;
 }
