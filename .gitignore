@@ -11,3 +11,6 @@
 !lab3/
 !lab3/*.c
 !lab3/*.h
+!lab4/
+!lab4/*.c
+!lab4/*.h
