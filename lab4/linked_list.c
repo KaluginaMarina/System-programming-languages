@@ -42,7 +42,7 @@ void print_list(struct list const* list){
     printf("\n===============================\nКоличество элементов: %d\n", list_length(list));
     printf("Сумма элементов: %d\n", list_sum(list));
     if (list == NULL){
-        printf("list слишком пуст");
+        printf("list слишком пуст\n===============================\n");
         return;
     }
     while (list->last != NULL){
