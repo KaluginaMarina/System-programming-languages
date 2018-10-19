@@ -23,17 +23,15 @@ struct list* list_create(int e);
  *  Функция для добавления элемента в начало списка
  *  Если список пуст, создает новый список
  *  @param list - указатель на список, в который добавляем элеент
- *  @return указатель на список
  */
-struct list* list_add_front(struct list* list, int e);
+void list_add_front(struct list** list, int e);
 
 /**
  *  Функция для добавления элемента в конец списка
  *  Если список пуст, создает новый список
  *  @param list - указатель на список, в который добавляем элеент
- *  @return указатель на список
  */
-struct list* list_add_back(struct list* list, int e);
+void list_add_back(struct list** list, int e);
 
 /**
  *  Функция для вывода всех эдементов списка на экран
