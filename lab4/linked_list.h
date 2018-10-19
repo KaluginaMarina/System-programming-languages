@@ -1,6 +1,9 @@
 #ifndef LAB4_LINKED_LIST_H
 #define LAB4_LINKED_LIST_H
 
+#include <stdbool.h>
+#include <stdlib.h>
+
 /**
  *  Структура связного списка
  *  Элементом списка является integer
@@ -58,7 +61,7 @@ void list_free(struct list** list);
  *  @param  list - указатель на список
  *  @return длинну списка
  */
- int list_length(struct list const* list);
+size_t list_length(struct list const* list);
 
 /**
 *  Функция возвращает значение элемента списка по индексу
@@ -75,4 +78,40 @@ int list_get(struct list const* list, unsigned int index);
  *          0, если list пуст (в общем-то, логично С: )
  */
 int list_sum(struct list const* list);
+
+/**
+ * Функция загружает list с файла
+ * @param list - указатель на list
+ * @param filename - имя файла
+ * @return  true - успешное выполнение функции
+ *          false - завершение выполнения с ошибкой
+ */
+bool load(struct list** list, const char* filename);
+
+/**
+ * Функция сохраняет list в файл
+ * @param list - указатель на list
+ * @param filename - имя файла
+ * @return  true - успешное выполнение функции
+ *          false - завершение выполнения с ошибкой
+ */
+bool save(struct list* list, const char* filename);
+
+/**
+ * Функция сохраняет все элементы списка в бинарный файл
+ * @param list - указатель на list
+ * @param filename - имя файла
+ * @return  true - успешное выполнение функции
+ *          false - завершение выполнения с ошибкой
+ */
+bool serialize(struct list* list, const char* filename);
+
+/**
+ * Функция считывает все элементы с бинарного файла
+ * @param list - указатель на list
+ * @param filename - имя файла
+ * @return  true - успешное выполнение функции
+ *          false - завершение выполнения с ошибкой
+ */
+bool deserialize(struct list** list, const char* filename);
 #endif //LAB4_LINKED_LIST_H

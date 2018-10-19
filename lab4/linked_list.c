@@ -80,8 +80,8 @@ void list_free(struct list** list){
     }
 }
 
-int list_length(struct list const* list){
-    int i = 0;
+size_t list_length(struct list const* list){
+    size_t i = 0;
     while (list != NULL) {
         struct list* last = list->last;
         list = last;
@@ -102,4 +102,65 @@ int list_sum(struct list const* list){
         list = list->last;
     }
     return sum;
+}
+
+bool load(struct list** list, const char* filename){
+    int e;
+    FILE* input_file = fopen(filename, "r");
+    if (input_file == NULL) {
+        return false;
+    }
+    while ( fscanf(input_file, "%d", &e) != EOF) {
+        list_add_back(list, e);
+    }
+    fclose(input_file);
+    return true;
+}
+
+bool save(struct list* list, const char* filename){
+    FILE* output_file = fopen(filename, "w+");
+    if (output_file == NULL){
+        return false;
+    }
+    while (list != NULL) {
+        fprintf(output_file, "%d ", list->elem);
+        list = list->last;
+    }
+    fclose(output_file);
+    return true;
+}
+
+bool serialize(struct list* list, const char* filename){
+    FILE* output_file = fopen(filename, "w+");
+    if (output_file == NULL){
+        return false;
+    }
+    size_t sz = list_length(list), i;
+    int* buf = (int*)malloc(sz* sizeof(int));
+    for (i = 0; i < sz; ++i){
+        *(buf + i) = list->elem;
+        list = list->last;
+    }
+    fwrite(buf, sz, sizeof(int), output_file);
+    fclose(output_file);
+    return true;
+}
+
+bool deserialize(struct list** list, const char* filename){
+    FILE* input_file = fopen(filename, "r");
+    if (input_file == NULL) {
+        return false;
+    }
+    fseek(input_file, 0, SEEK_END);
+    long sz = ftell(input_file), i;
+    rewind(input_file);
+
+    int* buf = (int*)malloc(sz* sizeof(int));
+    fread(buf, sz/sizeof(int), sizeof(int), input_file);
+
+    for(i = 0; i < sz/ sizeof(int); ++i){
+        list_add_front(list, *(buf + i));
+    }
+    fclose(input_file);
+    return true;
 }

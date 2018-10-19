@@ -81,10 +81,7 @@ int main() {
     scanf("%d", &k);
     switch (k){
         case 1: {
-            FILE *f = fopen("input.txt", "r");
-            while ( fscanf(f, "%d", &e) != EOF) {
-                list_add_back(&list, e);
-            }
+            load(&list, "input.txt");
             printf("Считали с файла list.\n");
             break;
         }
@@ -138,7 +135,18 @@ int main() {
     foreach(res_list, pf);
     list_free(&res_list);
 
-    printf("\n\nОчистили список:");
+
+    save(list, "output.txt");
+    printf("\n\nКонечный list можно найти в output.txt\n");
+
+    serialize(list, "ser");
+    list_free(&list);
+    deserialize(&list, "ser");
+    printf("\nПосле сериализации:");
+    print_list(list);
+
+
+    printf("\nОчистили список:");
     list_free(&list);
     print_list(list);
     return 0;
