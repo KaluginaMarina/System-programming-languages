@@ -32,3 +32,13 @@ void map_mut(struct list* list, int (*f)(int)){
         list = list->last;
     }
 }
+
+struct list* iterator(int s, size_t n, int (*f)(int)){
+    struct list* list = NULL;
+    size_t i = 0;
+    for(; i < n; ++i){
+        list_add_front(&list, s);
+        s = f(s);
+    }
+    return list;
+}

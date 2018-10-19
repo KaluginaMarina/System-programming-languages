@@ -33,4 +33,13 @@ int foldl(int acc, int (*f)(int, int), struct list const* list);
  * @param f
  */
 void map_mut(struct list* list, int (*f)(int));
+
+/**
+ * Ренерирует списов вида: [s, f(s), f(f(s)), ...], длинной n
+ * @param s - первый элемент списка
+ * @param n - длинна списка
+ * @param f - указатель на функцию
+ * @return новый список
+ */
+struct list* iterator(int s, size_t n, int (*f)(int));
 #endif //LAB4_HIGHER_ORDER_H

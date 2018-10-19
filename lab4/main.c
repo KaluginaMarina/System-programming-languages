@@ -62,6 +62,13 @@ int fun_abs(int x){
     return abs(x);
 }
 
+/**
+ * Функция для степент 2
+ */
+int fun_pow_two(int x){
+    return x*2;
+}
+
 int main() {
     int e;
 
@@ -78,6 +85,7 @@ int main() {
             while ( fscanf(f, "%d", &e) != EOF) {
                 list_add_back(&list, e);
             }
+            printf("Считали с файла list.\n");
             break;
         }
         case 2: {
@@ -91,8 +99,6 @@ int main() {
             return 0;
         }
     }
-
-    printf("Считали с файла list.\n");
     print_list(list);
     printf("\n\nЭлемент #3:\n%d", list_get(list, 3));
 
@@ -112,6 +118,7 @@ int main() {
     ipf = &fun_cube;
     res_list = map(list, ipf);
     foreach(res_list, pf);
+    list_free(&res_list);
 
     int (*ipfii)(int, int) = &fun_sum;
     printf("\n\nСумма элементов, посчитанная с помощью foldl: %d\n", foldl(0, ipfii, list));
@@ -125,10 +132,14 @@ int main() {
     map_mut(list, ipfi);
     foreach(list, pf);
 
+    printf("\n\n10 первых степеней двойки:\n");
+    ipfi = &fun_pow_two;
+    res_list = iterator(1, 10, ipfi);
+    foreach(res_list, pf);
+    list_free(&res_list);
+
     printf("\n\nОчистили список:");
     list_free(&list);
     print_list(list);
-
-    list_free(&res_list);
     return 0;
 }
