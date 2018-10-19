@@ -56,8 +56,8 @@ void print_list(struct list const* list){
     printf("\n===============================\n");
 }
 
-struct list* list_node_at(struct list const* list, int index){
-    int i = 0;
+struct list* list_node_at(struct list const* list, unsigned int index){
+    unsigned int i = 0;
     if (list == NULL){
         return NULL;
     }
@@ -92,7 +92,7 @@ int list_length(struct list const* list){
     return i;
 }
 
-int list_get(struct list const* list, int index){
+int list_get(struct list const* list, unsigned int index){
     struct list* ret = list_node_at(list, index);
     return ret == NULL ? 0 : ret->elem;
 }
