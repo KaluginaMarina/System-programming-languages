@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "higher_order.h"
 
-void foreach(struct list* list, void (*f)(int)){
+void foreach(struct list const* list, void (*f)(int)){
     while (list != NULL){
         f(list->elem);
         list = list->last;
@@ -16,4 +16,19 @@ struct list* map(struct list const* list, int (*f)(int)){
         list = list->last;
     }
     return result_list;
+}
+
+int foldl(int acc, int (*f)(int, int), struct list const* list){
+    while (list != NULL){
+        acc = f(acc, list->elem);
+        list = list->last;
+    }
+    return acc;
+}
+
+void map_mut(struct list* list, int (*f)(int)){
+    while(list != NULL){
+        list->elem = f(list->elem);
+        list = list->last;
+    }
 }

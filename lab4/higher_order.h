@@ -8,7 +8,7 @@
  *  @param list - указатель на list элементов
  *  @param f - указатель на функцию
  */
-void foreach(struct list* list, void (*f)(int));
+void foreach(struct list const* list, void (*f)(int));
 
 /**
  * Функция создает новый список, в котором к содержимомоу каждому элементу list'а применяется функция f
@@ -17,4 +17,20 @@ void foreach(struct list* list, void (*f)(int));
  * @return новый list с результатом приминения f к каждому элементу list'a
  */
 struct list* map(struct list const* list, int (*f)(int));
+
+/**
+ * Функция возвращает сущность того же типа, что и аккумулятор, запуская f т копии аккумулятора и текущим элементом списка
+ * @param acc - начальное значение аккумулятора
+ * @param f - указатель на функцию
+ * @param list - список элементов
+ * @return полученное значение
+ */
+int foldl(int acc, int (*f)(int, int), struct list const* list);
+
+/**
+ * Функция изменяет каждый элемент list'a, применяя функцию f
+ * @param list
+ * @param f
+ */
+void map_mut(struct list* list, int (*f)(int));
 #endif //LAB4_HIGHER_ORDER_H

@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include "linked_list.h"
 #include "higher_order.h"
 
 
 /**
  * Функция для вывода list'а через пробелы
- * @param x
  */
 void fun_print_with_space(int x) {
     printf("%d ", x);
@@ -15,7 +15,6 @@ void fun_print_with_space(int x) {
 
 /**
  * Функция для вывода list'а через переносы строки
- * @param x
  */
 void fun_print_with_n(int x){
     printf("%d\n", x);
@@ -23,8 +22,6 @@ void fun_print_with_n(int x){
 
 /**
  * функция возводит в квадрат
- * @param x
- * @return x*x
  */
 int fun_square(int x){
     return x*x;
@@ -32,33 +29,67 @@ int fun_square(int x){
 
 /**
  * Функция возводит в куб
- * @param x
- * @return x*x
  */
 int fun_cube(int x){
     return x*x*x;
 }
 
+/**
+ * Функция возввращает сумму элементов
+ */
+int fun_sum(int acc, int x){
+    return acc + x;
+}
+
+/**
+ * Функция для поиска максимального значения в list
+ */
+int fun_max(int acc, int x){
+    return acc > x ? acc : x;
+}
+
+/**
+ * Функция для поиска минимального в list
+ */
+int fun_min(int acc, int x){
+    return acc < x ? acc : x;
+}
+
+/**
+ * Функция возвращает модуль числа
+ */
+int fun_abs(int x){
+    return abs(x);
+}
+
 int main() {
     int e;
-//    printf("Введите элементы списка:\n");
-//    struct list *list = NULL;
-//    while (scanf("%d", &e) != EOF){
-//        list_add_back(&list, e);
-//    }
-//
-//    print_list(list);
-//
-//    printf("\n\nЭлемент #3:\n%d", list_get(list, 3));
-//
-//    printf("\n\nОчистили список:");
-//    list_free(&list);
-//    print_list(list);
 
     struct list* list = NULL;
-    FILE *f = fopen("input.txt", "r");
-    while ( fscanf(f, "%d", &e) != EOF) {
-        list_add_back(&list, e);
+
+    printf("Введите - 1 для считывания с файла\n"
+           "        - 2 для считывания с stdin\n");
+
+    int k;
+    scanf("%d", &k);
+    switch (k){
+        case 1: {
+            FILE *f = fopen("input.txt", "r");
+            while ( fscanf(f, "%d", &e) != EOF) {
+                list_add_back(&list, e);
+            }
+            break;
+        }
+        case 2: {
+            while (scanf("%d", &e) != EOF){
+                list_add_back(&list, e);
+            }
+            break;
+        }
+        default: {
+            printf("Неверно.");
+            return 0;
+        }
     }
 
     printf("Считали с файла list.\n");
@@ -82,9 +113,22 @@ int main() {
     res_list = map(list, ipf);
     foreach(res_list, pf);
 
+    int (*ipfii)(int, int) = &fun_sum;
+    printf("\n\nСумма элементов, посчитанная с помощью foldl: %d\n", foldl(0, ipfii, list));
+    ipfii = &fun_max;
+    printf("Максимальный элемент в list (с помошью foldl): %d\n", foldl(INT_MIN, ipfii, list));
+    ipfii = &fun_min;
+    printf("Минимальный элемент в list (с помошью foldl): %d\n", foldl(INT_MAX, ipfii, list));
+
+    printf("\n\nМодуль всех чисел, с помошью map_mut:\n");
+    int (*ipfi)(int) = &fun_abs;
+    map_mut(list, ipfi);
+    foreach(list, pf);
 
     printf("\n\nОчистили список:");
     list_free(&list);
     print_list(list);
+
+    list_free(&res_list);
     return 0;
 }
