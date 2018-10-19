@@ -46,13 +46,10 @@ void print_list(struct list const* list){
         printf("list слишком пуст\n===============================\n");
         return;
     }
-    while (list->last != NULL){
-        list = list->last;
-    }
     printf("list: ");
     while (list != NULL){
         printf("%d ", list->elem);
-        list = list->next;
+        list = list->last;
     }
     printf("\n===============================\n");
 }

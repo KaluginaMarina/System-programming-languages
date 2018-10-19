@@ -34,7 +34,7 @@ void list_add_front(struct list** list, int e);
 void list_add_back(struct list** list, int e);
 
 /**
- *  Функция для вывода всех эдементов списка на экран
+ *  Функция для вывода всех эдементов списка на экран и информацию о нем
  *  @param list - указатель на список
  */
  void print_list(struct list const* list);
