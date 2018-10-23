@@ -86,8 +86,18 @@ int main() {
             break;
         }
         case 2: {
-            while (scanf("%d", &e) != EOF){
-                list_add_back(&list, e);
+            printf("Введите list:\n");
+            while (1){
+                int s = scanf("%d", &e);
+                if (s == EOF){
+                    break;
+                }
+                if (s != 1){
+                    printf("%c - не является числом.\n", getchar());
+                } else {
+                    printf("Добавляем в list %d\n", e);
+                    list_add_back(&list, e);
+                }
             }
             break;
         }
