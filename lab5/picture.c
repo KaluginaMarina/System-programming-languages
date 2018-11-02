@@ -39,7 +39,7 @@ void write_bmp(char const* filename, image_t const* image, bmp_header_t* header)
     header->biHeight = new_image->height;
 
     fwrite(header, 1, sizeof(bmp_header_t), output);
-    fwrite(image->data, 1, image->height * image->width * sizeof(pixel_t), output);
+    fwrite(image->data, 1, new_image->height * new_image->width * sizeof(pixel_t), output);
     fclose(output);
 }
 
