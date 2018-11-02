@@ -72,6 +72,12 @@ int fun_pow_two(int x){
 int main() {
     int e;
 
+    float f;
+    f = 3.14159265;
+    print float(1, f);
+
+    return 0;
+
     struct list* list = NULL;
 
     printf("Введите - 1 для считывания с файла\n"
