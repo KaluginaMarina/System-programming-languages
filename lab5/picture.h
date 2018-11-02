@@ -30,6 +30,9 @@ typedef struct {
     pixel_t* data;
 } image_t;
 
+
+bmp_header_t header; // я это потом убру, четно
+
 image_t* rotate(image_t const* image);
 
 image_t* read_bmp(char const* filename);
