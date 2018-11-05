@@ -34,10 +34,16 @@ typedef enum {
     READ_OK = 0,
     READ_FILE_NOT_FOUND,
     READ_INVALID_BITS,
-    READ_INVALID_HEADER
+    READ_INVALID_HEADER,
+    READ_FILENAME_NOT_FOUND
 } read_error_code_t;
 
-
+typedef enum {
+    WRITE_OK = 0,
+    WRITE_ERROR,
+    WRITE_IMAGE_NOT_FOUND,
+    WRITE_FILENAME_NOT_FOUND,
+} write_error_code_t;
 
 /**
  * Функция переворота картинки
@@ -54,6 +60,12 @@ image_t* rotate(image_t const* image);
  */
 read_error_code_t read_bmp(char const* filename, image_t* new_image);
 
-void write_bmp(char const* filename, image_t const* image);
+/**
+ * Функция записи изображение в bmp-файл
+ * @param filename - имя файла
+ * @param image - картинка
+ * @return write_error_code_t
+ */
+write_error_code_t write_bmp(char const* filename, image_t const* image);
 
 #endif //LAB5_PICTURE_H

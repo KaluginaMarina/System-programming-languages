@@ -18,8 +18,14 @@ image_t* rotate(image_t const* image){
     return new_image;
 }
 
-void write_bmp(char const* filename, image_t const* image){
+write_error_code_t write_bmp(char const* filename, image_t const* image){
 
+    if (image == NULL){
+        return WRITE_IMAGE_NOT_FOUND;
+    }
+    if (filename == NULL){
+        return WRITE_FILENAME_NOT_FOUND;
+    }
     bmp_header_t* header = (bmp_header_t*)malloc(sizeof(bmp_header_t));
     int padding = image->width % 4;
     uint32_t i, j;
@@ -37,6 +43,9 @@ void write_bmp(char const* filename, image_t const* image){
     }
 
     FILE* output = fopen(filename, "wb+");
+    if (output == NULL){
+        return WRITE_ERROR;
+    }
     header->bfType = 19778;
     header->bfileSize = new_image->width * new_image->height * sizeof(pixel_t) + sizeof(header);
     header->bfReserved = 0;
@@ -56,9 +65,14 @@ void write_bmp(char const* filename, image_t const* image){
     fwrite(header, 1, sizeof(bmp_header_t), output);
     fwrite(image->data, 1, new_image->height * new_image->width * sizeof(pixel_t), output);
     fclose(output);
+    return WRITE_OK;
 }
 
 read_error_code_t read_bmp(char const* filename, image_t* input_image){
+
+    if (filename == NULL){
+        return READ_FILENAME_NOT_FOUND;
+    }
     FILE* input = fopen(filename, "rb");
     if (input == NULL){
         return READ_FILE_NOT_FOUND;
