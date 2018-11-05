@@ -18,7 +18,9 @@ image_t* rotate(image_t const* image){
     return new_image;
 }
 
-void write_bmp(char const* filename, image_t const* image, bmp_header_t* header){
+void write_bmp(char const* filename, image_t const* image){
+
+    bmp_header_t* header = (bmp_header_t*)malloc(sizeof(bmp_header_t));
     int padding = image->width % 4;
     uint32_t i, j;
     image_t* new_image = (image_t*)malloc(sizeof(image_t));
@@ -35,6 +37,19 @@ void write_bmp(char const* filename, image_t const* image, bmp_header_t* header)
     }
 
     FILE* output = fopen(filename, "wb+");
+    header->bfType = 19778;
+    header->bfileSize = new_image->width * new_image->height * sizeof(pixel_t) + sizeof(header);
+    header->bfReserved = 0;
+    header->bOffBits = sizeof(bmp_header_t);
+    header->biSize = 40;
+    header->biPlanes = 0;
+    header->biBitCount = 24;
+    header->biCompression = 0;
+    header->biSizeImage = new_image->width * new_image->height * sizeof(pixel_t);
+    header->biXPelsPerMeter = 2835;
+    header->biYPelsPerMeter = 2835;
+    header->biClrUsed = 0;
+    header->biClrImportant = 0;
     header->biWidth = new_image->width - padding;
     header->biHeight = new_image->height;
 
@@ -45,6 +60,7 @@ void write_bmp(char const* filename, image_t const* image, bmp_header_t* header)
 
 image_t* read_bmp(char const* filename){
     FILE *input = fopen(filename, "rb");
+    bmp_header_t header;
     fread(&header, 1, sizeof(header), input);
 
     uint8_t * data = (uint8_t *)malloc(header.biSizeImage);
@@ -57,8 +73,7 @@ image_t* read_bmp(char const* filename){
     int padding = header.biWidth % 4;
     for (uint32_t i = 0; i < header.biHeight; ++i){
         for (uint32_t j = 0; j < header.biWidth; ++j){
-            uint64_t offset = sizeof(pixel_t)*(i*header.biWidth + j) + padding*i;
-            *(input_image->data + i*header.biWidth + j) = *(pixel_t*)(((uint8_t*)data) + offset);
+            *(input_image->data + i*header.biWidth + j) = *(pixel_t*)(((uint8_t*)data) + sizeof(pixel_t)*(i*header.biWidth + j) + padding*i);
         }
     }
     input_image->height = header.biHeight;

@@ -30,13 +30,10 @@ typedef struct {
     pixel_t* data;
 } image_t;
 
-
-bmp_header_t header; // я это потом убру, четно
-
 image_t* rotate(image_t const* image);
 
 image_t* read_bmp(char const* filename);
 
-void write_bmp(char const* filename, image_t const* image, bmp_header_t* header);
+void write_bmp(char const* filename, image_t const* image);
 
 #endif //LAB5_PICTURE_H
