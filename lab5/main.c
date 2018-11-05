@@ -4,7 +4,8 @@
 
 
 int main() {
-    image_t* input_image  = read_bmp("1_1.bmp");
+    image_t* input_image = (image_t*)malloc(sizeof(image_t));
+    read_bmp("1_1.bmp", input_image);
     image_t* output_image = rotate(input_image);
     write_bmp("out.bmp", output_image);
     printf("Я записаль");

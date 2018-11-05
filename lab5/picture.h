@@ -30,9 +30,29 @@ typedef struct {
     pixel_t* data;
 } image_t;
 
+typedef enum {
+    READ_OK = 0,
+    READ_FILE_NOT_FOUND,
+    READ_INVALID_BITS,
+    READ_INVALID_HEADER
+} read_error_code_t;
+
+
+
+/**
+ * Функция переворота картинки
+ * @param image - изображение типа image_t
+ * @return перевернутое изображение
+ */
 image_t* rotate(image_t const* image);
 
-image_t* read_bmp(char const* filename);
+/**
+ * Функция чтения байт с bmp-файла
+ * @param filename - имя bmp-файла
+ * @param new_image - для записи прочитанной картинки
+ * @return   read_error_code_t
+ */
+read_error_code_t read_bmp(char const* filename, image_t* new_image);
 
 void write_bmp(char const* filename, image_t const* image);
 

@@ -58,16 +58,25 @@ void write_bmp(char const* filename, image_t const* image){
     fclose(output);
 }
 
-image_t* read_bmp(char const* filename){
-    FILE *input = fopen(filename, "rb");
+read_error_code_t read_bmp(char const* filename, image_t* input_image){
+    FILE* input = fopen(filename, "rb");
+    if (input == NULL){
+        return READ_FILE_NOT_FOUND;
+    }
     bmp_header_t header;
     fread(&header, 1, sizeof(header), input);
-
-    uint8_t * data = (uint8_t *)malloc(header.biSizeImage);
+    if (header.bfType == 0){
+        return READ_INVALID_HEADER;
+    }
+    uint8_t* data = (uint8_t *)malloc(header.biSizeImage);
     fseek(input, header.bOffBits, SEEK_SET);
     fread(data, 1, header.biSizeImage, input);
-
-    image_t* input_image = (image_t*)malloc(sizeof(image_t));
+    if (data == NULL){
+        return READ_INVALID_BITS;
+    }
+    if (input_image == NULL) {
+        input_image = (image_t*)malloc(sizeof(image_t));
+    }
     input_image->data = (pixel_t*)malloc(header.biHeight * header.biWidth * sizeof(pixel_t));
 
     int padding = header.biWidth % 4;
@@ -79,5 +88,5 @@ image_t* read_bmp(char const* filename){
     input_image->height = header.biHeight;
     input_image->width = header.biWidth;
     fclose(input);
-    return input_image;
+    return READ_OK;
 }
