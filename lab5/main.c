@@ -5,7 +5,7 @@
 
 int main() {
     image_t* input_image = (image_t*)malloc(sizeof(image_t));
-    switch (read_bmp("11sm.bmp", input_image)) {
+    switch (read_bmp("1_1.bmp", input_image)) {
         case READ_FILENAME_NOT_FOUND :{
             printf("Не найден файл.\n");
             break;
@@ -51,6 +51,5 @@ int main() {
             break;
         }
     }
-    printf("Я записаль");
     return 0;
 }

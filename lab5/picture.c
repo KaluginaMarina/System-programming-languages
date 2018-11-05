@@ -15,6 +15,13 @@ image_t* rotate(image_t const* image){
             *(new_image->data + j*image->height + i) = *(image->data + i*image->width + j);
         }
     }
+    for (i = 0; i < new_image->height/2; ++i){
+        for (j = 0; j < new_image->width; ++j){
+            pixel_t tmp =  *(new_image->data + new_image->width*((new_image->height - 1) - i) + j);
+            *(new_image->data + new_image->width*((new_image->height - 1) - i) + j) = *(new_image->data + i*new_image->width + j);
+            *(new_image->data + i*new_image->width + j) = tmp;
+        }
+    }
     return new_image;
 }
 
