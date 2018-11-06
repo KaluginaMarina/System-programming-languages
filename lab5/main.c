@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "picture.h"
+#include "memory_mapping_and_friends.h"
 
 
 int main() {
+
+    rotate_bmp("11sm-1.bmp", "out.bmp");
+    image_bmp_fused_rotate_90cw("11sm-1.bmp", "out2.bmp");
+    return 0;
     image_t* input_image = (image_t*)malloc(sizeof(image_t));
-    switch (read_bmp("1_1.bmp", input_image)) {
+    switch (read_bmp("11sm.bmp", input_image)) {
         case READ_FILENAME_NOT_FOUND :{
             printf("Не найден файл.\n");
             break;
