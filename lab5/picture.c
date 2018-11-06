@@ -11,15 +11,8 @@ image_t* rotate(image_t const* image){
 
     uint32_t i, j;
     for (i = 0; i < image->height; ++i){
-        for (j = 0; j < image->width; ++j){
-            *(new_image->data + j*image->height + i) = *(image->data + i*image->width + j);
-        }
-    }
-    for (i = 0; i < new_image->height/2; ++i){
-        for (j = 0; j < new_image->width; ++j){
-            pixel_t tmp =  *(new_image->data + new_image->width*((new_image->height - 1) - i) + j);
-            *(new_image->data + new_image->width*((new_image->height - 1) - i) + j) = *(new_image->data + i*new_image->width + j);
-            *(new_image->data + i*new_image->width + j) = tmp;
+        for (j = 0; j < image->width; ++j) {
+            *(new_image->data + ((image->width - 1 - j) * image->height) + i) = *(image->data + i*image->width + j);
         }
     }
     return new_image;
