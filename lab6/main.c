@@ -11,5 +11,16 @@ int main() {
     for (int i = 0; i < 300; i+=30){
         printf("%d\n", a[i]);
     }
+
+    _free(a);
+
+    int* b = (int*)_malloc(sizeof(int)*3);
+    for (int i = 0; i < 3; ++i){
+        b[i] = 1;
+    }
+
+    for(int i = 0; i < 3; ++i){
+        printf("%d\n", b[i]);
+    }
     return 0;
 }

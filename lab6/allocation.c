@@ -62,3 +62,15 @@ void* _malloc(size_t query){
 
 }
 
+void* _free(void* p){
+    //сейчас у нас указатель на данные, а надо на header
+    p -= sizeof(header);
+    header* head = (header*)p;
+    head->is_free = true; //помечаем текущий блок пустым
+    header* cur = (void*)head+head->capacity; //указатель на следующий элемент
+    while(cur->is_free){    //надо объединить все пустые блоки, которые находятся после того, что мы очистили в один
+        head->capacity += cur->capacity;       //увеличиваем размер блока
+        cur = (void*)head + head->capacity;    //указатель на следующий блок
+    }
+
+}
