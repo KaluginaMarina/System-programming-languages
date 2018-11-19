@@ -1,26 +1,32 @@
 #include <stdio.h>
 #include "allocation.h"
+#include "mem_debug.h"
 
 int main() {
-    init(100);
-    int* a = (int*)_malloc(sizeof(int)*300);
-    for (int i = 0; i < 300; ++i){
-        a[i] = 0;
+    init(1000);
+
+    char* a = (char*)_malloc(sizeof(char)*3000);
+    for (int i = 0; i < 3000; ++i){
+        a[i] = 64;
     }
 
-    for (int i = 0; i < 300; i+=30){
-        printf("%d\n", a[i]);
+    char* b = (char*)_malloc(sizeof(char)*3);
+    for(int i = 0; i < 3; ++i){
+        b[i] = 2;
     }
+
+    char* c = (char*)_malloc(sizeof(char)*1);
+    c[0] = 'f';
+
+    FILE * f = fopen("heap.txt","w");
+    memalloc_debug_heap(f, HEAP_START);
 
     _free(a);
+    _free(c);
+    _free(b);
 
-    int* b = (int*)_malloc(sizeof(int)*3);
-    for (int i = 0; i < 3; ++i){
-        b[i] = 1;
-    }
+    f = fopen("heap_after_free.txt","w");
+    memalloc_debug_heap(f, HEAP_START);
 
-    for(int i = 0; i < 3; ++i){
-        printf("%d\n", b[i]);
-    }
     return 0;
 }
