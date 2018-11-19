@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include "allocation.h"
 #include "sys/mman.h"
 
@@ -62,15 +63,14 @@ void* _malloc(size_t query){
 
 }
 
-void* _free(void* p){
+void _free(void* p){
     //сейчас у нас указатель на данные, а надо на header
     p -= sizeof(header);
     header* head = (header*)p;
     head->is_free = true; //помечаем текущий блок пустым
-    header* cur = (void*)head+head->capacity; //указатель на следующий элемент
-    while(cur->is_free){    //надо объединить все пустые блоки, которые находятся после того, что мы очистили в один
-        head->capacity += cur->capacity;       //увеличиваем размер блока
-        cur = (void*)head + head->capacity;    //указатель на следующий блок
-    }
 
+    while (head->next != NULL && ((header*)(head->next))->is_free){
+        head->capacity += ((header*)(head->next))->capacity + sizeof(header);
+        head->next = ((header*)(head->next))->next;
+    }
 }

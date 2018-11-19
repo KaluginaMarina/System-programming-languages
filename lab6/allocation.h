@@ -16,6 +16,6 @@ typedef struct __attribute__((packed)){
 
 void* init(size_t init_size);
 void* _malloc(size_t query);
-void* _free(void* p);
+void _free(void* p);
 
 #endif //LAB6_ALLOCATION_H
