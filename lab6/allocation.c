@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "allocation.h"
-#include "sys/mman.h"
+#include <sys/mman.h>
 
 void* init(size_t init_size){
     if(init_size < sizeof(header))
@@ -21,6 +21,10 @@ void* init(size_t init_size){
 }
 
 void* _malloc(size_t query){
+    if (MIN_BLOCK_SIZE <= 0){
+        return NULL;
+    }
+
     if(query < MIN_BLOCK_SIZE){
         query = MIN_BLOCK_SIZE;
     }
@@ -69,6 +73,7 @@ void _free(void* p){
     header* head = (header*)p;
     head->is_free = true; //помечаем текущий блок пустым
 
+    //Объединяем со следующими пустыми блоками
     while (head->next != NULL && ((header*)(head->next))->is_free){
         head->capacity += ((header*)(head->next))->capacity + sizeof(header);
         head->next = ((header*)(head->next))->next;
