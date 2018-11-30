@@ -2,6 +2,8 @@
 #include "picture.h"
 #include "sepia.h"
 #include <stdlib.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 int main() {
     image_t* input_image = (image_t*)malloc(sizeof(image_t));
@@ -27,8 +29,21 @@ int main() {
             break;
         }
     }
+    
+    struct rusage r;
+    struct timeval start;
+    struct timeval end;
+    getrusage(RUSAGE_SELF, &r);
+    start = r.ru_utime;
 
     sepia_c_inplace(input_image);
+
+    getrusage(RUSAGE_SELF, &r);
+    end = r.ru_utime;
+    long res = ((end.tv_sec - start.tv_sec) * 1000000L) + end.tv_usec - start.tv_usec;
+    printf( "Время выполнения sepia на с: %ld\n", res);
+
+
     switch (write_bmp("out.bmp", input_image)){
         case WRITE_IMAGE_NOT_FOUND: {
             printf("Изображение для записи не найдено.\n");

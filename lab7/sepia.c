@@ -3,11 +3,6 @@
 #include <inttypes.h>
 #include <glob.h>
 
-struct pixel { uint8_t b, g, r; };
-struct image {
-    uint32_t width, height;
-    struct pixel* array;
-};
 static unsigned char sat( uint64_t x) {
     if (x < 256)
         return (unsigned char)x;
