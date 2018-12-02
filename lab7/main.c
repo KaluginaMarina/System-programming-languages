@@ -5,46 +5,8 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-int main() {
-    image_t* input_image = (image_t*)malloc(sizeof(image_t));
-    switch (read_bmp("b.bmp", input_image)) {
-        case READ_FILENAME_NOT_FOUND :{
-            printf("Не найден файл.\n");
-            break;
-        }
-        case READ_INVALID_BITS: {
-            printf("Проблемы с данными.\n");
-            break;
-        }
-        case READ_INVALID_HEADER: {
-            printf("Проблемы с заголовком.\n");
-            break;
-        }
-        case READ_OK:{
-            printf("Изображение получено.\n");
-            break;
-        }
-        default: {
-            printf("Вообще что-то не так.\n");
-            break;
-        }
-    }
-    
-    struct rusage r;
-    struct timeval start;
-    struct timeval end;
-    getrusage(RUSAGE_SELF, &r);
-    start = r.ru_utime;
-
-    sepia_c_inplace(input_image);
-
-    getrusage(RUSAGE_SELF, &r);
-    end = r.ru_utime;
-    long res = ((end.tv_sec - start.tv_sec) * 1000000L) + end.tv_usec - start.tv_usec;
-    printf( "Время выполнения sepia на с: %ld\n", res);
-
-
-    switch (write_bmp("out.bmp", input_image)){
+void write_ans(char* filename, image_t* img){
+    switch (write_bmp(filename, img)){
         case WRITE_IMAGE_NOT_FOUND: {
             printf("Изображение для записи не найдено.\n");
             break;
@@ -58,7 +20,7 @@ int main() {
             break;
         }
         case WRITE_OK: {
-            printf("Я записаль:3\n");
+            printf("Я записаль в %s :3\n", filename);
             break;
         }
         default: {
@@ -66,5 +28,65 @@ int main() {
             break;
         }
     }
+}
+
+
+int main() {
+    image_t* image_c = (image_t*)malloc(sizeof(image_t));
+    switch (read_bmp("b.bmp", image_c)) {
+        case READ_FILENAME_NOT_FOUND :{
+            printf("Не найден файл.\n");
+            return 1;
+        }
+        case READ_INVALID_BITS: {
+            printf("Проблемы с данными.\n");
+            return 1;
+        }
+        case READ_INVALID_HEADER: {
+            printf("Проблемы с заголовком.\n");
+            return 1;
+        }
+        case READ_OK:{
+            printf("Изображение получено.\n");
+            break;
+        }
+        default: {
+            printf("Вообще что-то не так.\n");
+            return 1;
+        }
+    }
+
+    image_t image_asm = *image_c;
+
+    struct rusage r;
+    struct timeval start;
+    struct timeval end;
+    getrusage(RUSAGE_SELF, &r);
+    start = r.ru_utime;
+
+    sepia_c_inplace(image_c);
+
+    getrusage(RUSAGE_SELF, &r);
+    end = r.ru_utime;
+    long res = ((end.tv_sec - start.tv_sec) * 1000000L) + end.tv_usec - start.tv_usec;
+    printf( "Время выполнения sepia (с): %ld\n", res);
+
+    write_ans("out_c.bmp", image_c);
+
+
+    getrusage(RUSAGE_SELF, &r);
+    start = r.ru_utime;
+
+
+    sepia_sse_inplace(&image_asm);
+
+    getrusage(RUSAGE_SELF, &r);
+    end = r.ru_utime;
+    res = ((end.tv_sec - start.tv_sec) * 1000000L) + end.tv_usec - start.tv_usec;
+    printf( "Время выполнения sepia (sse): %ld\n", res);
+
+    write_ans("out_sse.bmp", &image_asm);
+
     return 0;
 }
+

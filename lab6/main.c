@@ -2,11 +2,13 @@
 #include "allocation.h"
 #include "mem_debug.h"
 
+#define MIN_BLOCK_SIZE 1
+
 int main() {
     init(1000);
 
-    char* a = (char*)_malloc(sizeof(char)*3000);
-    for (int i = 0; i < 3000; ++i){
+    char* a = (char*)_malloc(sizeof(char)*10000);
+    for (int i = 0; i < 10000; ++i){
         a[i] = 64;
     }
 
