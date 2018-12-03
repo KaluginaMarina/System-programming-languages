@@ -25,4 +25,4 @@
 !lab7/*.c
 !lab7/*.h
 !lab7/Makefile
-!lab7/*.s
+!lab7/*.asm

@@ -6,7 +6,7 @@ clean:
 
 all: lab7
 
-lab7: *.s *.c
-		nasm -f elf64 image_sepia_sse.s
+lab7: *.asm *.c
+		nasm -f elf64 image_sepia_sse.asm
 			$(CC) $(CFLAGS) -c *.c
 				$(CC) -o lab7  *.o -no-pie

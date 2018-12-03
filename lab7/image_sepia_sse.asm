@@ -1,7 +1,11 @@
 global image_sepia_sse
 
 section .data
+; матрицы, на которые производится умножение
+; за один раз обрабатывается 4 канала:
+; rgbr -> gbrg -> brgb
 
+; матрица для rgbr
 align 16
 c1_rgbr: dd 0.393, 0.349, 0.272, 0.393
 align 16
@@ -9,6 +13,7 @@ c2_rgbr: dd 0.769, 0.686, 0.543, 0.769
 align 16
 c3_rgbr: dd 0.189, 0.168, 0.131, 0.189
 
+; матрица для gbrg
 align 16
 c1_gbrg: dd 0.349, 0.272, 0.393, 0.349
 align 16
@@ -16,6 +21,7 @@ c2_gbrg: dd 0.686, 0.543, 0.769, 0.686
 align 16
 c3_gbrg: dd 0.168, 0.131, 0.189, 0.168
 
+; матрица для brgb
 align 16
 c1_brgb: dd 0.272, 0.393, 0.349, 0.272
 align 16
@@ -23,19 +29,16 @@ c2_brgb: dd 0.543, 0.769, 0.686, 0.543
 align 16
 c3_brgb: dd 0.131, 0.189, 0.168, 0.131
 
+; коэффициенты подгона
 align 16
 shuffle_rgb_to_bgr: db 2, 1, 0, 5, 4, 3, 8, 7, 6, 11, 10, 9, -1, -1, -1, -1
 
 section .text
 
-; rdi = pointer to the pixel array
-; rsi = number of pixels (must be divisible by 4)
+; rdi = указатель на массив пикселей
+; rsi = количество пикселей
 
-; Four channels are processed in parallel,
-; first R_{n+0} G_{n+0} B_{n+0} R_{n+1}
-; then  G_{n+1} B_{n+1} R_{n+2] G_{n+2}
-; then  B_{n+2} R_{n+3} G_{n+3} B_{n+3}
-
+; для сохранения констант в регистры
 %define xmm_ch1 xmm0
 %define xmm_ch2 xmm1
 %define xmm_ch3 xmm2
@@ -61,6 +64,7 @@ section .text
 %define pixel_ptr r8
 
 image_sepia_sse:
+  ; переместим все, что там надо в регистры
   movaps xmm_c1_rgbr, [c1_rgbr]
   movaps xmm_c2_rgbr, [c2_rgbr]
   movaps xmm_c3_rgbr, [c3_rgbr]
@@ -140,21 +144,21 @@ image_sepia_sse_loop_4_pixels:
   shr rdx, 8                ; (uint8[8]) b2 g2 r2 b3 g3 r3 00 00
   movd xmm_ch3, edx         ; channel 3 (blue)
   pmovzxbd xmm_ch3, xmm_ch3 ; (uint32[4]) b2 g2 r2 b3
-  shufps xmm_ch3, xmm_ch3, 0b01010100
-  ; xmm_ch3[0] = xmm_ch3[0], xmm_ch3[1] = xmm_ch3[1], xmm_ch3[2] = xmm_ch3[1], xmm_ch3[3] = xmm_ch3[1]
+  shufps xmm_ch3, xmm_ch3, 0b11111100
+  ; xmm_ch3[0] = xmm_ch3[0], xmm_ch3[1] = xmm_ch3[3], xmm_ch3[2] = xmm_ch3[3], xmm_ch3[3] = xmm_ch3[3]
   ; xmm_ch3 is now [pixel[2].b, pixel[3].b, pixel[3].b, pixel[3].b]
   cvtdq2ps xmm_ch3, xmm_ch3
 
   shr rdx, 8                ; (uint8[8]) g2 r2 b3 g3 r3 00 00 00
   movd xmm_ch2, edx         ; channel 2 (green)
   pmovzxbd xmm_ch2, xmm_ch2 ; (uint32[4]) g2 r2 b3 g3
-  shufps xmm_ch2, xmm_ch2, 0b01010100
+  shufps xmm_ch2, xmm_ch2, 0b11111100
   cvtdq2ps xmm_ch2, xmm_ch2
 
   shr rdx, 8                ; (uint8[8]) r2 b3 g3 r3 00 00 00 00
   movd xmm_ch1, edx         ; channel 1 (red)
   pmovzxbd xmm_ch1, xmm_ch1 ; (uint32[4]) r2 b3 g3 r3
-  shufps xmm_ch1, xmm_ch1, 0b01010100
+  shufps xmm_ch1, xmm_ch1, 0b11111100
   cvtdq2ps xmm_ch1, xmm_ch1
 
   xorps xmm_brgb, xmm_brgb

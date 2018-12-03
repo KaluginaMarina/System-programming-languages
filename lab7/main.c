@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <unistd.h>
 
 void write_ans(char* filename, image_t* img){
     switch (write_bmp(filename, img)){
@@ -32,8 +33,9 @@ void write_ans(char* filename, image_t* img){
 
 
 int main() {
-    image_t* image_c = (image_t*)malloc(sizeof(image_t));
-    switch (read_bmp("b.bmp", image_c)) {
+    image_t image_c;
+
+    switch (read_bmp("s.bmp", &image_c)) {
         case READ_FILENAME_NOT_FOUND :{
             printf("Не найден файл.\n");
             return 1;
@@ -56,7 +58,8 @@ int main() {
         }
     }
 
-    image_t image_asm = *image_c;
+    image_t image_asm;
+    read_bmp("s.bmp", &image_asm);
 
     struct rusage r;
     struct timeval start;
@@ -64,26 +67,30 @@ int main() {
     getrusage(RUSAGE_SELF, &r);
     start = r.ru_utime;
 
-    sepia_c_inplace(image_c);
+    sepia_c_inplace(&image_c);
 
     getrusage(RUSAGE_SELF, &r);
     end = r.ru_utime;
     long res = ((end.tv_sec - start.tv_sec) * 1000000L) + end.tv_usec - start.tv_usec;
     printf( "Время выполнения sepia (с): %ld\n", res);
-
-    write_ans("out_c.bmp", image_c);
-
+    printf( "end.tv_sec: %ld\n", end.tv_sec);
+    printf( "start.tv_sec: %ld\n", start.tv_sec);
+    printf( "end.tv_usec: %ld\n", end.tv_usec);
+    printf( "start.tv_usec: %ld\n", start.tv_usec);
+    write_ans("out_c.bmp", &image_c);
 
     getrusage(RUSAGE_SELF, &r);
     start = r.ru_utime;
-
-
     sepia_sse_inplace(&image_asm);
 
     getrusage(RUSAGE_SELF, &r);
     end = r.ru_utime;
     res = ((end.tv_sec - start.tv_sec) * 1000000L) + end.tv_usec - start.tv_usec;
     printf( "Время выполнения sepia (sse): %ld\n", res);
+    printf( "end.tv_sec: %ld\n", end.tv_sec);
+    printf( "start.tv_sec: %ld\n", start.tv_sec);
+    printf( "end.tv_usec: %ld\n", end.tv_usec);
+    printf( "start.tv_usec: %ld\n", start.tv_usec);
 
     write_ans("out_sse.bmp", &image_asm);
 
